@@ -1,7 +1,7 @@
 {% extends "footer.html" %}
 {% block content %}
 <h1>BMI Calculator</h1>
-<form action="/bmi" method="POST">
+<form action="{{ url_for('bmi_result') }}" method="POST">
     <label>Height (cm): <input type="number" step="any" name="height"></label>
     <label>Weight (kg): <input type="number" step="any" name="weight"></label>
     <input type="submit" value="Calculate">
