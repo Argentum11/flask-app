@@ -1,7 +1,9 @@
 from flask import Flask, render_template, request
+from Users import UserModel
 
 app = Flask(__name__)
 app.config.from_object("config.DevelopmentConfig")
+userModel = UserModel("users.csv")
 
 @app.route("/")
 def bmi_form():
@@ -28,13 +30,7 @@ def bmi_result():
 
 @app.route("/users")
 def users():
-    users = [
-        {"username": "Jacky",
-            "age": 30.0},
-        {"username": "Andy",
-         "age": 18}
-    ]
-    return render_template("users.html", users=users)
+    return render_template("users.html", users=userModel.get_users())
 
 
 if __name__ == "__main__":
