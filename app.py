@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from Users import UserModel
 
 app = Flask(__name__)
@@ -30,7 +30,7 @@ def bmi_result():
 
 @app.route("/users")
 def users():
-    return render_template("users.html", users=userModel.get_users())
+    return jsonify(userModel.get_users())
 
 
 if __name__ == "__main__":
