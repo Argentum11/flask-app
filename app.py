@@ -5,9 +5,11 @@ app = Flask(__name__)
 app.config.from_object("config.DevelopmentConfig")
 userModel = UserModel("users.csv")
 
+
 @app.route("/")
 def bmi_form():
     return render_template("bmi_form.html")
+
 
 @app.route("/bmi", methods=["POST"])
 def bmi_result():
@@ -30,7 +32,15 @@ def bmi_result():
 
 @app.route("/users")
 def users():
-    return jsonify(userModel.get_users())
+    return jsonify(userModel.get_users(user_id=None))
+
+
+@app.route("/users/<int:user_id>")
+def user(user_id):
+    user = userModel.get_users(user_id=user_id)
+    if user is None:
+        return jsonify({"error": "User not found!"}), 404
+    return jsonify(user)
 
 
 if __name__ == "__main__":
