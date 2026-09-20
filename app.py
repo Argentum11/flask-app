@@ -43,5 +43,14 @@ def user(user_id):
     return jsonify(user)
 
 
+@app.route("/users", methods=["POST"])
+def add_user():
+    new_user = userModel.add_user(
+        username=request.json["username"], age=request.json["age"])
+    response = jsonify(new_user)
+    response.headers["location"] = f"/users/{new_user["user_id"]}"
+    return response, 201
+
+
 if __name__ == "__main__":
     app.run(port=8081)
