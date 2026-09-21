@@ -34,3 +34,14 @@ class UserModel:
 
     def delete_user(self, user_id):
         return self.__users.pop(user_id, None) is not None
+
+    def update_user(self, user_id, new_username, new_age):
+        if self.__users.get(user_id, None) is None:
+            return None
+        else:
+            target_user = self.__users[user_id]
+            if new_username is not None:
+                target_user["username"] = new_username
+            if new_age is not None:
+                target_user["age"] = new_age
+            return target_user

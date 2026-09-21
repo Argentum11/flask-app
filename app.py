@@ -60,5 +60,17 @@ def delete_user(user_id):
         return jsonify({"message": "User not found"}), 404
 
 
+@app.route("/users/<int:user_id>", methods=["PUT", "PATCH"])
+def update_user(user_id):
+    new_username = request.json["username"] if "username" in request.json else None
+    new_age = request.json["age"] if "age" in request.json else None
+    updated_user = userModel.update_user(
+        user_id=user_id, new_username=new_username, new_age=new_age)
+    if updated_user is None:
+        return jsonify({"error": "User not found!"}), 404
+    else:
+        return jsonify(updated_user)
+
+
 if __name__ == "__main__":
     app.run(port=8081)
