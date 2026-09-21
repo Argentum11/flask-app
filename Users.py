@@ -31,3 +31,6 @@ class UserModel:
         self.__next_user_id += 1
 
         return self.__users[user_id]
+
+    def delete_user(self, user_id):
+        return self.__users.pop(user_id, None) is not None

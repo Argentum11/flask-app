@@ -52,5 +52,13 @@ def add_user():
     return response, 201
 
 
+@app.route("/users/<int:user_id>", methods=["DELETE"])
+def delete_user(user_id):
+    if userModel.delete_user(user_id=user_id):
+        return "", 204
+    else:
+        return jsonify({"message": "User not found"}), 404
+
+
 if __name__ == "__main__":
     app.run(port=8081)
