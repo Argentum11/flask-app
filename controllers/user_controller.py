@@ -38,9 +38,13 @@ class UserResource(Resource):
         else:
             return {"message": "User not found"}, 404
 
-    def update_user(self, user_id):
-        new_username = request.json["username"] if "username" in request.json else None
-        new_age = request.json["age"] if "age" in request.json else None
+    def update_user(self, user_id, partial: bool):
+        try:
+            data = userSchema.load(request.json, partial=partial)
+        except ValidationError as err:
+            return {"error": err.messages}, 400
+        new_username = data["username"] if "username" in data else None
+        new_age = data["age"] if "age" in data else None
         updated_user = userModel.update_user(
             user_id=user_id, new_username=new_username, new_age=new_age)
         if updated_user is None:
@@ -49,7 +53,7 @@ class UserResource(Resource):
             return updated_user
 
     def put(self, user_id):
-        return self.update_user(user_id=user_id)
+        return self.update_user(user_id=user_id, partial=False)
 
     def patch(self, user_id):
-        return self.update_user(user_id=user_id)
+        return self.update_user(user_id=user_id, partial=True)
