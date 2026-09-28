@@ -1,7 +1,16 @@
 from flask import request
 from flask_restful import Resource
+from marshmallow import Schema, fields, ValidationError
 from Users import UserModel
 userModel = UserModel("users.csv")
+
+
+class UserSchema(Schema):
+    username = fields.String(required=True)
+    age = fields.Integer(required=True)
+
+
+userSchema = UserSchema()
 
 
 class UserResource(Resource):
@@ -15,8 +24,12 @@ class UserResource(Resource):
         return user
 
     def post(self):
+        try:
+            data = userSchema.load(request.json)
+        except ValidationError as err:
+            return {"error": err.messages}, 400
         new_user = userModel.add_user(
-            username=request.json["username"], age=request.json["age"])
+            username=data["username"], age=data["age"])
         return new_user, 201, {"location": f"/users/{new_user["user_id"]}"}
 
     def delete(self, user_id):
