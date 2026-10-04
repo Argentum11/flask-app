@@ -6,6 +6,7 @@ userModel = UserModel("users.csv")
 
 
 class UserSchema(Schema):
+    user_id = fields.Integer(dump_only=True)
     username = fields.String(required=True)
     age = fields.Integer(required=True)
 
@@ -17,11 +18,12 @@ class UserResource(Resource):
 
     def get(self, user_id=None):
         if user_id is None:
-            return userModel.get_users(user_id=None)
+            users = userModel.get_users(user_id=None)
+            return userSchema.dump(users, many=True)
         user = userModel.get_users(user_id=user_id)
         if user is None:
             return {"error": "User not found!"}, 404
-        return user
+        return userSchema.dump(user)
 
     def post(self):
         try:

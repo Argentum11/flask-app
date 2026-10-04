@@ -18,7 +18,7 @@ class UserModel:
 
     def get_users(self, user_id):
         if user_id is None:
-            return self.__users
+            return list(self.__users.values())
         return self.__users.get(user_id)
 
     def add_user(self, username, age):
