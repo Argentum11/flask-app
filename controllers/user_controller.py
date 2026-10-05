@@ -1,17 +1,9 @@
 from flask import request
 from flask_restful import Resource
-from marshmallow import Schema, fields, ValidationError
+from marshmallow import ValidationError
 from Users import UserModel
+from schemas.user_schema import userSchema
 userModel = UserModel("users.csv")
-
-
-class UserSchema(Schema):
-    user_id = fields.Integer(dump_only=True)
-    username = fields.String(required=True)
-    age = fields.Integer(required=True)
-
-
-userSchema = UserSchema()
 
 
 class UserResource(Resource):
