@@ -1,12 +1,15 @@
 from flask import Flask, render_template, request
 from flask_restful import Api
 from controllers.user_controller import UserResource
+from controllers.classroom_controller import ClassroomResource
 
 app = Flask(__name__)
 app.config.from_object("config.DevelopmentConfig")
 api = Api(app)
 
 api.add_resource(UserResource, "/users", "/users/<int:user_id>")
+api.add_resource(ClassroomResource, "/classrooms",
+                 "/classrooms/<int:classroom_id>")
 
 
 @app.route("/")
