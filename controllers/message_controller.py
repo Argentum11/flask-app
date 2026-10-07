@@ -3,23 +3,29 @@ from flask import request
 from marshmallow import ValidationError
 from schemas.message_schema import messageSchema
 
+
 class MessageResource(Resource):
     def __init__(self):
         self.queue = []
-    
+
     def post(self, user_id):
         token = request.headers.get("token")
         if token is None:
             return {}, 401, {"WWW-Authenticate": "A required token must exist."}
-        try:
-            data = messageSchema.load(request.json)
-        except ValidationError as err:
-            return {"error": err.messages}, 400
-        self.queue.append({
-            "user_id":user_id,
-            "datadate": data["datadate"],
-            "location": data["location"]
-        })
-        print(self.queue)
-        return "Acknowledged", 202
-        
+        elif self.is_valid_token(token=token):
+            try:
+                data = messageSchema.load(request.json)
+            except ValidationError as err:
+                return {"error": err.messages}, 400
+            self.queue.append({
+                "user_id": user_id,
+                "datadate": data["datadate"],
+                "location": data["location"]
+            })
+            print(self.queue)
+            return "Acknowledged", 202
+        else:
+            return {}, 403
+
+    def is_valid_token(self, token):
+        return token == "flask"
