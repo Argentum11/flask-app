@@ -8,6 +8,9 @@ class MessageResource(Resource):
         self.queue = []
     
     def post(self, user_id):
+        token = request.headers.get("token")
+        if token is None:
+            return {}, 401, {"WWW-Authenticate": "A required token must exist."}
         try:
             data = messageSchema.load(request.json)
         except ValidationError as err:
