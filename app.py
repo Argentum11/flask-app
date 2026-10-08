@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, g
 from flask_restful import Api
 from controllers.user_controller import UserResource
 from controllers.classroom_controller import ClassroomResource
 from controllers.message_controller import MessageResource
+import uuid
 
 app = Flask(__name__)
 app.config.from_object("config.DevelopmentConfig")
@@ -12,6 +13,12 @@ api.add_resource(UserResource, "/users", "/users/<int:user_id>")
 api.add_resource(ClassroomResource, "/classrooms",
                  "/classrooms/<int:classroom_id>")
 api.add_resource(MessageResource, "/messages/<int:user_id>")
+
+
+@app.before_request
+def preprocess():
+    g.uuid = uuid.uuid4()
+    g.conn = {"is_connected": True}
 
 
 @app.route("/")

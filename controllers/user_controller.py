@@ -1,4 +1,5 @@
-from flask import request
+from flask import request, g
+from flask import current_app as app
 from flask_restful import Resource
 from marshmallow import ValidationError
 from Users import UserModel
@@ -9,6 +10,8 @@ userModel = UserModel("users.csv")
 class UserResource(Resource):
 
     def get(self, user_id=None):
+        app.logger.info(
+            f"uuid: {g.uuid}, is_connected: {g.conn["is_connected"]}")
         if user_id is None:
             users = userModel.get_users(user_id=None)
             return userSchema.dump(users, many=True)
