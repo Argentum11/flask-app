@@ -21,6 +21,19 @@ def preprocess():
     g.conn = {"is_connected": True}
 
 
+@app.after_request
+def postprocess(response):
+    g.conn["is_connected"] = False
+    app.logger.info(g.conn)
+    app.logger.info(
+        "%s %s %s -> %s (%s bytes)",
+        g.uuid, request.method, request.path,
+        response.status_code, response.content_length,
+    )
+    response.headers["X-Request-ID"] = str(g.uuid)
+    return response
+
+
 @app.route("/")
 def bmi_form():
     return render_template("bmi_form.html")
