@@ -13,6 +13,11 @@ class UserResource(Resource):
         app.logger.info(
             f"uuid: {g.uuid}, is_connected: {g.conn["is_connected"]}")
         app.logger.info(f"Cookies in GET /users : {request.cookies}")
+        sent_messages_before = request.cookies.get("sent_messages_before")
+        if sent_messages_before:
+            app.logger.info(f"This user ({g.uuid}) sent messages before.")
+        else:
+            app.logger.info(f"This user ({g.uuid}) has not sent any messages.")
         if user_id is None:
             users = userModel.get_users(user_id=None)
             return userSchema.dump(users, many=True)
