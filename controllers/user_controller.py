@@ -12,6 +12,7 @@ class UserResource(Resource):
     def get(self, user_id=None):
         app.logger.info(
             f"uuid: {g.uuid}, is_connected: {g.conn["is_connected"]}")
+        app.logger.info(f"Cookies in GET /users : {request.cookies}")
         if user_id is None:
             users = userModel.get_users(user_id=None)
             return userSchema.dump(users, many=True)
