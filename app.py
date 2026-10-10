@@ -3,7 +3,7 @@ from flask_restful import Api
 from controllers.user_controller import UserResource
 from controllers.classroom_controller import ClassroomResource
 from controllers.message_controller import MessageResource
-import uuid
+import uuid, time
 
 app = Flask(__name__)
 app.config.from_object("config.DevelopmentConfig")
@@ -19,14 +19,16 @@ api.add_resource(MessageResource, "/messages/<int:user_id>")
 def preprocess():
     g.uuid = uuid.uuid4()
     g.conn = {"is_connected": True}
+    g.start = time.perf_counter()
 
 
 @app.after_request
 def postprocess(response):
+    duration_ms = (time.perf_counter() - g.start) * 1000
     app.logger.info(
-        "%s %s %s -> %s (%s bytes)",
+        "%s %s %s -> %s (%s bytes) in %.2f ms",
         g.uuid, request.method, request.path,
-        response.status_code, response.content_length,
+        response.status_code, response.content_length, duration_ms
     )
     response.headers["X-Request-ID"] = str(g.uuid)
     return response
