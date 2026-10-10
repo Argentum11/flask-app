@@ -23,8 +23,6 @@ def preprocess():
 
 @app.after_request
 def postprocess(response):
-    g.conn["is_connected"] = False
-    app.logger.info(g.conn)
     app.logger.info(
         "%s %s %s -> %s (%s bytes)",
         g.uuid, request.method, request.path,
@@ -32,6 +30,12 @@ def postprocess(response):
     )
     response.headers["X-Request-ID"] = str(g.uuid)
     return response
+
+
+@app.teardown_request
+def cleanup(exception):
+    g.conn["is_connected"] = False
+    app.logger.info(g.conn)
 
 
 @app.route("/")
