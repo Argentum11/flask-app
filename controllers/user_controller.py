@@ -4,6 +4,7 @@ from flask_restful import Resource
 from marshmallow import ValidationError
 from Users import UserModel
 from schemas.user_schema import userSchema
+from schemas.pagination_schema import paginationSchema
 userModel = UserModel("users.csv")
 
 
@@ -19,9 +20,16 @@ class UserResource(Resource):
         else:
             app.logger.info(f"This user ({g.uuid}) has not sent any messages.")
         if user_id is None:
-            users = userModel.get_users(user_id=None)
+            # parse query parameters
+            try:
+                query_parameters = paginationSchema.load(request.args)
+                limit = query_parameters["limit"]
+                offset = query_parameters["offset"]
+            except ValidationError as err:
+                return {"error": err.messages}, 400
+            users = userModel.list_users(limit=limit, offset=offset)
             return userSchema.dump(users, many=True)
-        user = userModel.get_users(user_id=user_id)
+        user = userModel.get_user(user_id=user_id)
         if user is None:
             return {"error": "User not found!"}, 404
         return userSchema.dump(user)

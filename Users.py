@@ -16,10 +16,13 @@ class UserModel:
         self.__users = users
         self.__next_user_id = max(self.__users.keys()) + 1
 
-    def get_users(self, user_id):
-        if user_id is None:
-            return list(self.__users.values())
+    def get_user(self, user_id):
         return self.__users.get(user_id)
+
+    def list_users(self, limit: int = None, offset: int = None):
+        offset = 0 if offset is None else offset
+        end = None if limit is None else offset+limit
+        return list(self.__users.values())[offset:end]
 
     def add_user(self, username, age):
         user_id = self.__next_user_id
