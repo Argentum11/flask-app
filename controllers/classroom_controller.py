@@ -30,6 +30,6 @@ class ClassroomResource(Resource):
 
     def update_classroom_students(self, classroom):
         classroom_copy = classroom.copy()
-        classroom_copy["students"] = [userModel.get_users(
+        classroom_copy["students"] = [userModel.get_user(
             user_id) for user_id in classroom_copy["students"]]
         return classroom_copy
