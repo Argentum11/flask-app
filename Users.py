@@ -19,10 +19,16 @@ class UserModel:
     def get_user(self, user_id):
         return self.__users.get(user_id)
 
-    def list_users(self, limit: int = None, offset: int = None):
+    def list_users(self, limit: int = None, offset: int = None, filter_by=None):
         offset = 0 if offset is None else offset
         end = None if limit is None else offset+limit
-        return list(self.__users.values())[offset:end]
+        users = list(self.__users.values())
+        if filter_by is not None:
+            field, compare, value_casted = filter_by
+            cast = type(value_casted)
+            users = [user for user in users if compare(
+                cast(user[field]), value_casted)]
+        return users[offset:end]
 
     def add_user(self, username, age):
         user_id = self.__next_user_id
