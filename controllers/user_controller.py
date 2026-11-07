@@ -3,7 +3,7 @@ from flask import current_app as app
 from flask_restful import Resource
 from marshmallow import ValidationError
 from Users import UserModel
-from schemas.user_schema import userSchema, userFilterSchema
+from schemas.user_schema import userSchema, userFilterSchema, userSortSchema
 from schemas.pagination_schema import paginationSchema
 userModel = UserModel("users.csv")
 
@@ -26,10 +26,11 @@ class UserResource(Resource):
                 limit = query_parameters["limit"]
                 offset = query_parameters["offset"]
                 filter_parameters = userFilterSchema.load(request.args)
+                sort_parameters = userSortSchema.load(request.args)
             except ValidationError as err:
                 return {"error": err.messages}, 400
             users = userModel.list_users(
-                limit=limit, offset=offset, filter_by=filter_parameters["filter_by"])
+                limit=limit, offset=offset, filter_by=filter_parameters["filter_by"], sort_by=sort_parameters["sort_by"])
             return userSchema.dump(users, many=True)
         user = userModel.get_user(user_id=user_id)
         if user is None:
