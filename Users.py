@@ -19,7 +19,7 @@ class UserModel:
     def get_user(self, user_id):
         return self.__users.get(user_id)
 
-    def list_users(self, limit: int = None, offset: int = None, filter_by=None):
+    def list_users(self, limit: int = None, offset: int = None, filter_by=None, sort_by=None):
         offset = 0 if offset is None else offset
         end = None if limit is None else offset+limit
         users = list(self.__users.values())
@@ -28,6 +28,11 @@ class UserModel:
             cast = type(value_casted)
             users = [user for user in users if compare(
                 cast(user[field]), value_casted)]
+        # sorting
+        if sort_by is not None:
+            field, descending = sort_by
+            users = sorted(users, key=lambda user: int(
+                user[field]), reverse=descending)
         return users[offset:end]
 
     def add_user(self, username, age):
