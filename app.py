@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, g
 from v1 import v1_bp
+from v2 import v2_bp
 
 import uuid
 import time
@@ -7,6 +8,7 @@ import time
 app = Flask(__name__)
 app.config.from_object("config.DevelopmentConfig")
 app.register_blueprint(v1_bp, url_prefix="/v1")
+app.register_blueprint(v2_bp, url_prefix="/v2")
 
 
 @app.before_request
