@@ -1,5 +1,5 @@
 from marshmallow import Schema, fields, pre_dump
-from schemas.user_schema import UserSchema
+from v1.schemas.user_schema import UserSchema
 
 class ClassroomSchema(Schema):
     class_id = fields.Integer(dump_only=True)

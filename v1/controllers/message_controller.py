@@ -2,7 +2,7 @@ from flask_restful import Resource
 from flask import request, after_this_request
 from flask import current_app as app
 from marshmallow import ValidationError
-from schemas.message_schema import messageSchema
+from v1.schemas.message_schema import messageSchema
 
 
 class MessageResource(Resource):
@@ -14,11 +14,11 @@ class MessageResource(Resource):
         @after_this_request
         def set_cookie(response):
             response.set_cookie("sent_messages_before", value="true")
-            response.set_cookie("messages_only", value="1", path="/messages")
+            response.set_cookie("messages_only", value="1", path="/v1/messages")
             return response
 
         app.logger.info(
-            f"Cookies in POST /messages/:user_id : {request.cookies}")
+            f"Cookies in POST /v1/messages/:user_id : {request.cookies}")
         token = request.headers.get("token")
         if token is None:
             return {}, 401, {"WWW-Authenticate": "A required token must exist."}

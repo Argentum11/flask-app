@@ -1,10 +1,10 @@
-from flask import request, g
+from flask import request, g, url_for
 from flask import current_app as app
 from flask_restful import Resource
 from marshmallow import ValidationError
 from Users import UserModel
-from schemas.user_schema import userSchema, userFilterSchema, userSortSchema
-from schemas.pagination_schema import paginationSchema
+from v1.schemas.user_schema import userSchema, userFilterSchema, userSortSchema
+from v1.schemas.pagination_schema import paginationSchema
 userModel = UserModel("users.csv")
 
 
@@ -13,7 +13,7 @@ class UserResource(Resource):
     def get(self, user_id=None):
         app.logger.info(
             f"uuid: {g.uuid}, is_connected: {g.conn["is_connected"]}")
-        app.logger.info(f"Cookies in GET /users : {request.cookies}")
+        app.logger.info(f"Cookies in GET /v1/users : {request.cookies}")
         sent_messages_before = request.cookies.get("sent_messages_before")
         if sent_messages_before:
             app.logger.info(f"This user ({g.uuid}) sent messages before.")
@@ -44,7 +44,7 @@ class UserResource(Resource):
             return {"error": err.messages}, 400
         new_user = userModel.add_user(
             username=data["username"], age=data["age"])
-        return new_user, 201, {"location": f"/users/{new_user["user_id"]}"}
+        return new_user, 201, {"location": url_for(".userresource", user_id=new_user["user_id"])}
 
     def delete(self, user_id):
         if userModel.delete_user(user_id=user_id):

@@ -1,6 +1,6 @@
 from flask_restful import Resource
-from controllers.user_controller import userModel
-from schemas.classroom_schema import classroomSchema
+from v1.controllers.user_controller import userModel
+from v1.schemas.classroom_schema import classroomSchema
 
 
 class ClassroomResource(Resource):

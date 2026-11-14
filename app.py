@@ -1,18 +1,12 @@
 from flask import Flask, render_template, request, g
-from flask_restful import Api
-from controllers.user_controller import UserResource
-from controllers.classroom_controller import ClassroomResource
-from controllers.message_controller import MessageResource
-import uuid, time
+from v1 import v1_bp
+
+import uuid
+import time
 
 app = Flask(__name__)
 app.config.from_object("config.DevelopmentConfig")
-api = Api(app)
-
-api.add_resource(UserResource, "/users", "/users/<int:user_id>")
-api.add_resource(ClassroomResource, "/classrooms",
-                 "/classrooms/<int:classroom_id>")
-api.add_resource(MessageResource, "/messages/<int:user_id>")
+app.register_blueprint(v1_bp, url_prefix="/v1")
 
 
 @app.before_request
@@ -65,4 +59,6 @@ def bmi_result():
 
 
 if __name__ == "__main__":
+    # check for all routes
+    # print(app.url_map)
     app.run(port=8081)
